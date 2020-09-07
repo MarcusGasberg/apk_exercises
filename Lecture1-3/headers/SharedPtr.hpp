@@ -1,6 +1,7 @@
 #ifndef __SHAREDPTR_H__
 #define __SHAREDPTR_H__
 
+#include "Teardown.hpp"
 #include <cassert>
 #include <iostream>
 #include <stddef.h>
@@ -8,44 +9,63 @@
 template <typename T> class SharedPtr
 {
 private:
-  T *          raw_ptr;
-  mutable int *n_shared;
-  void         clean_up_ptr();
+  T *           raw_ptr;
+  mutable int * n_shared;
+  void          clean_up_ptr();
+  ITeardown<T> *teardown;
 
 public:
-  SharedPtr(T *t);
+  template <typename D>
+  SharedPtr(T *t, D d)
+      : raw_ptr{t}, n_shared{new int(1)}, teardown{new TeardownFunctor<T, D>(d)}
+  {
+  }
+
+  SharedPtr(T *t) : raw_ptr{t}, n_shared{new int(1)}, teardown{nullptr} {};
   explicit SharedPtr(const SharedPtr<T> &toCopy);
   ~SharedPtr();
-  SharedPtr &operator=(const SharedPtr<T> &rhs);
-  T &        operator*();
-  T *        operator->();
-  bool       operator==(const SharedPtr<T> &rhs);
-  explicit   operator bool() const;
-  size_t     count();
+
+  SharedPtr<T> &operator=(const SharedPtr<T> &rhs);
+  T &           operator*();
+  T *           operator->();
+  bool          operator==(const SharedPtr<T> &rhs);
+  explicit      operator bool() const;
+
+  size_t count();
 };
 
-template <typename T>
-SharedPtr<T>::SharedPtr(T *t) : raw_ptr{t}, n_shared{new int(1)}
+template <typename T> void SharedPtr<T>::clean_up_ptr()
 {
+  if (count() < 1 && this->raw_ptr != nullptr)
+  {
+    if (this->teardown != nullptr)
+    {
+      (*this->teardown)(this->raw_ptr);
+    }
+    else
+    {
+      delete raw_ptr;
+    }
+  }
 }
 
 template <typename T>
-SharedPtr<T>::SharedPtr(const SharedPtr<T> &toCopy)
-    : SharedPtr<T>(toCopy.raw_ptr)
+SharedPtr<T>::SharedPtr(const SharedPtr<T> &toCopy) : SharedPtr(toCopy.raw_ptr)
 {
   (*toCopy.n_shared)++;
-  n_shared = toCopy.n_shared;
+  this->n_shared = toCopy.n_shared;
 }
 
 template <typename T> SharedPtr<T>::~SharedPtr()
 {
-  (*n_shared)--;
+  (*this->n_shared)--;
   clean_up_ptr();
 }
 
 template <typename T>
 SharedPtr<T> &SharedPtr<T>::operator=(const SharedPtr<T> &rhs)
 {
+
   assert(&rhs != this);
 
   (*n_shared)--;
@@ -53,31 +73,26 @@ SharedPtr<T> &SharedPtr<T>::operator=(const SharedPtr<T> &rhs)
 
   (*rhs.n_shared)++;
 
-  n_shared = rhs.n_shared;
-  raw_ptr  = rhs.raw_ptr;
+  this->n_shared = rhs.n_shared;
+  this->raw_ptr  = rhs.raw_ptr;
 
   return *this;
 }
 
-template <typename T> void SharedPtr<T>::clean_up_ptr()
-{
-  if (count() < 1 && raw_ptr != nullptr)
-  {
-    delete raw_ptr;
-  }
-}
+template <typename T> T &SharedPtr<T>::operator*() { return *this->raw_ptr; }
 
-template <typename T> T *SharedPtr<T>::operator->() { return raw_ptr; }
+template <typename T> T *SharedPtr<T>::operator->() { return this->raw_ptr; }
 
 template <typename T> bool SharedPtr<T>::operator==(const SharedPtr<T> &rhs)
 {
   return this->raw_ptr == rhs.raw_ptr;
 }
 
-template <typename T> T &SharedPtr<T>::operator*() { return *raw_ptr; }
+template <typename T> SharedPtr<T>::operator bool() const
+{
+  return this->raw_ptr != nullptr;
+}
 
-template <typename T> size_t SharedPtr<T>::count() { return *n_shared; }
-
-template <typename T> SharedPtr<T>::operator bool() const { return true; }
+template <typename T> size_t SharedPtr<T>::count() { return *this->n_shared; }
 
 #endif // __SHAREDPTR_H__
