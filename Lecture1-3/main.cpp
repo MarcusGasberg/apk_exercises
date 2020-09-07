@@ -26,9 +26,12 @@ int main(int, char **)
 
   if (p3 == p2) std::cout << "p3 == p2" << std::endl;
 
-  auto testLambda = [](auto s) { std::cout << "TEST: " << *s << std::endl; };
+  auto testLambda = [](auto s) {
+    std::cout << "TEST: " << *s << std::endl;
+    delete s;
+  };
 
-  auto p4 = new SharedPtr<std::string>(s, testLambda);
+  auto p4 = new SharedPtr<int>(i, testLambda);
 
   delete p4;
 
