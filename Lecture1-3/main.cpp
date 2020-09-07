@@ -1,13 +1,54 @@
+#include "./headers/MyArray.hpp"
 #include "./headers/SharedPtr.hpp"
 #include <iostream>
 #include <string>
 
-struct log_functor
-{
-  void test() { std::cout << "TEST" << std::endl; }
-};
+void test_shared_ptr();
+void test_my_array();
 
 int main(int, char **)
+{
+  // test_shared_ptr();
+  test_my_array();
+
+  return 0;
+}
+
+void test_my_array()
+{
+  MyArray<int>    myInt{5};
+  MyArray<double> myDouble{10};
+  const int       i = 10;
+  const double    d = 3;
+  myInt.fill(i);
+
+  myDouble = myInt;
+  // Test something in array
+  myDouble[4] = d;
+  auto found  = myfind(myDouble.begin(), myDouble.end(), d);
+  if (found != myDouble.end())
+  {
+    std::cout << "Found: " << *found << std::endl;
+  }
+  else
+  {
+    std::cout << "Didn't find: " << d << std::endl;
+  }
+
+  // Test something not in array
+  const double d2 = 69;
+  found           = myfind(myDouble.begin(), myDouble.end(), d2);
+  if (found != myDouble.end())
+  {
+    std::cout << "Found: " << *found << std::endl;
+  }
+  else
+  {
+    std::cout << "Didn't find: " << d2 << std::endl;
+  }
+}
+
+void test_shared_ptr()
 {
   std::string *s  = new std::string("asd");
   std::string *s2 = new std::string("qwe");
@@ -34,6 +75,4 @@ int main(int, char **)
   auto p4 = new SharedPtr<int>(i, testLambda);
 
   delete p4;
-
-  return 0;
 }
