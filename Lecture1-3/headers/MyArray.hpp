@@ -19,6 +19,7 @@ public:
   T &         operator[](int i) const;
   size_t      get_size() const;
   MyArray<T> &operator=(MyArray<T> const &rhs);
+  typedef T   value_type;
 };
 
 template <typename T> class MyArray<T *>
@@ -37,6 +38,7 @@ public:
   T *&          operator[](int i) const;
   size_t        get_size() const;
   MyArray<T *> &operator=(MyArray<T *> const &rhs);
+  typedef T     value_type;
 };
 
 template <typename T> MyArray<T>::MyArray(int n) : size{n}
@@ -162,7 +164,7 @@ template <typename T> T *&MyArray<T *>::operator[](int i) const
   return container[i];
 }
 
-template <typename T> T *myfind(T *first, T *last, const T &v)
+template <typename T> T *my_find(T *first, T *last, const T &v)
 {
   T *current = first;
   while (current != last)
@@ -176,7 +178,7 @@ template <typename T> T *myfind(T *first, T *last, const T &v)
   return current;
 }
 
-template <typename T, typename V> T **myfind(T **first, T **last, const V &v)
+template <typename T, typename V> T **my_find(T **first, T **last, const V &v)
 {
   T **current = first;
   while (current != last)
@@ -188,6 +190,19 @@ template <typename T, typename V> T **myfind(T **first, T **last, const V &v)
     current++;
   }
   return current;
+}
+
+template <typename Container>
+typename Container::value_type my_accumulate(const Container &container)
+{
+  typename Container::value_type m = typename Container::value_type();
+
+  for (auto val : container)
+  {
+    m += val;
+  }
+
+  return m;
 }
 
 #endif // __MYARRAY_H__

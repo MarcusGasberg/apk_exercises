@@ -45,11 +45,20 @@ void test_my_ptr_array()
   auto              searchFor = std::string("Hello");
   std::stringstream out;
   out << "Looking for '" << searchFor << "': ";
-  auto result = myfind(myPtr.begin(), myPtr.end(), searchFor) != myPtr.end()
+  auto result = my_find(myPtr.begin(), myPtr.end(), searchFor) != myPtr.end()
                     ? "Found it"
                     : "Not found";
 
   std::cout << out.str() << result << std::endl;
+  {
+    MyArray<int>         myInt{5};
+    MyArray<std::string> myString{20};
+    myInt.fill(5);
+    myString.fill("a");
+
+    std::cout << my_accumulate(myInt) << std::endl;
+    std::cout << my_accumulate(myString) << std::endl;
+  }
 }
 
 void test_my_array()
@@ -63,7 +72,7 @@ void test_my_array()
   myInt = myInt2;
   // Test something in array
   myInt[4]   = d;
-  auto found = myfind(myInt.begin(), myInt.end(), d);
+  auto found = my_find(myInt.begin(), myInt.end(), d);
   if (found != myInt.end())
   {
     std::cout << "Found: " << *found << std::endl;
@@ -77,7 +86,7 @@ void test_my_array()
 
   // Test something not in array
   const int d2 = 69;
-  found        = myfind(myInt3.begin(), myInt3.end(), d2);
+  found        = my_find(myInt3.begin(), myInt3.end(), d2);
   if (found != myInt3.end())
   {
     std::cout << "Found: " << *found << std::endl;
