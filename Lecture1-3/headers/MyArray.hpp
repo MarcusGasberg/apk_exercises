@@ -98,12 +98,12 @@ MyArray<T *> &MyArray<T *>::operator=(MyArray<T *> const &rhs)
     delete container[i];
   }
 
-  size      = rhs.get_size();
+  size      = tmp.get_size();
   container = new T *[size];
 
   for (size_t i = 0; i < size; i++)
   {
-    container[i] = new T(*rhs[i]);
+    container[i] = new T(*tmp[i]);
   }
 
   return *this;
