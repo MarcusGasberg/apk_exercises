@@ -1,6 +1,7 @@
 #include "./headers/MyArray.hpp"
 #include "./headers/SharedPtr.hpp"
 #include <iostream>
+#include <sstream>
 #include <string>
 
 void test_shared_ptr();
@@ -20,8 +21,8 @@ void test_my_ptr_array()
 {
   MyArray<std::string *> myPtr(5);
   MyArray<std::string *> myPtr2(7);
-  myPtr.fill(new std::string("3"));
-  myPtr2.fill(new std::string("123"));
+  myPtr.fill(std::string("3"));
+  myPtr2.fill(std::string("123"));
 
   myPtr[4] = new std::string("asd");
 
@@ -40,13 +41,15 @@ void test_my_ptr_array()
 
   delete myPtr3;
 
-  myPtr[5] = new std::string("Hello");
-  std::cout << "Lookingfor'Hello'?  "
-            << (myfind(myPtr.begin(), myPtr.end(), std::string("Hello")) !=
-                        myPtr.end()
-                    ? "found"
-                    : "sryno ")
-            << std::endl;
+  myPtr[5]                    = new std::string("Hello");
+  auto              searchFor = std::string("Hello");
+  std::stringstream out;
+  out << "Looking for '" << searchFor << "': ";
+  auto result = myfind(myPtr.begin(), myPtr.end(), searchFor) != myPtr.end()
+                    ? "Found it"
+                    : "Not found";
+
+  std::cout << out.str() << result << std::endl;
 }
 
 void test_my_array()

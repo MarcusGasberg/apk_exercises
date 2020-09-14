@@ -31,7 +31,7 @@ public:
   MyArray(int size);
   MyArray(MyArray<T *> const &rhs);
   ~MyArray();
-  void          fill(T *object);
+  void          fill(const T &object);
   T **          begin() const;
   T **          end() const;
   T *&          operator[](int i) const;
@@ -127,11 +127,11 @@ template <typename T> void MyArray<T>::fill(const T &object)
   }
 }
 
-template <typename T> void MyArray<T *>::fill(T *object)
+template <typename T> void MyArray<T *>::fill(const T &object)
 {
   for (size_t i = 0; i < size; i++)
   {
-    container[i] = new T(*object);
+    container[i] = new T(object);
   }
 }
 
