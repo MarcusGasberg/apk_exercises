@@ -3,13 +3,13 @@
 	"tasks": [
 		{
 			"type": "shell",
-			"label": "C/C++: g++ build active file",
+			"label": "C/C++: g++ build main",
 			"command": "/usr/bin/g++",
 			"args": [
 				"-g",
-				"${file}",
+				"${workspaceFolder}/main.cpp",
 				"-o",
-				"${fileDirname}/${fileBasenameNoExtension}"
+				"${workspaceFolder}/bin/main.exe"
 			],
 			"options": {
 				"cwd": "${workspaceFolder}"
