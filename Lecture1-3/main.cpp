@@ -21,6 +21,7 @@ void test_my_ptr_array()
   MyArray<std::string *> myPtr(5);
   MyArray<std::string *> myPtr2(7);
   myPtr.fill(new std::string("3"));
+  myPtr2.fill(new std::string("123"));
 
   myPtr[4] = new std::string("asd");
 
@@ -29,8 +30,7 @@ void test_my_ptr_array()
     std::cout << *i << std::endl;
   }
 
-  myPtr = myPtr2;
-  myPtr2.fill(new std::string("10"));
+  myPtr                          = myPtr2;
   MyArray<std::string *> *myPtr3 = new MyArray<std::string *>(myPtr2);
 
   for (auto &&i : *myPtr3)
@@ -38,12 +38,7 @@ void test_my_ptr_array()
     std::cout << *i << std::endl;
   }
 
-  myPtr2 = *myPtr3;
-
-  for (auto &&i : *myPtr3)
-  {
-    std::cout << *i << std::endl;
-  }
+  delete myPtr3;
 
   myPtr[5] = new std::string("Hello");
   std::cout << "Lookingfor'Hello'?  "
@@ -56,17 +51,17 @@ void test_my_ptr_array()
 
 void test_my_array()
 {
-  MyArray<int>    myInt{5};
-  MyArray<double> myDouble{10};
-  const int       i = 10;
-  const double    d = 3;
+  MyArray<int> myInt{5};
+  MyArray<int> myInt2{10};
+  const int    i = 10;
+  const int    d = 3;
   myInt.fill(i);
 
-  myDouble = myInt;
+  myInt = myInt2;
   // Test something in array
-  myDouble[4] = d;
-  auto found  = myfind(myDouble.begin(), myDouble.end(), d);
-  if (found != myDouble.end())
+  myInt[4]   = d;
+  auto found = myfind(myInt.begin(), myInt.end(), d);
+  if (found != myInt.end())
   {
     std::cout << "Found: " << *found << std::endl;
   }
@@ -75,12 +70,12 @@ void test_my_array()
     std::cout << "Didn't find: " << d << std::endl;
   }
 
-  auto myDouble2(myDouble);
+  auto myInt3(myInt);
 
   // Test something not in array
-  const double d2 = 69;
-  found           = myfind(myDouble2.begin(), myDouble2.end(), d2);
-  if (found != myDouble2.end())
+  const int d2 = 69;
+  found        = myfind(myInt3.begin(), myInt3.end(), d2);
+  if (found != myInt3.end())
   {
     std::cout << "Found: " << *found << std::endl;
   }

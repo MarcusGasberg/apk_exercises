@@ -13,13 +13,12 @@ public:
   MyArray(int size);
   MyArray(MyArray<T> const &rhs);
   ~MyArray();
-  void   fill(const T &object);
-  T *    begin() const;
-  T *    end() const;
-  T &    operator[](int i) const;
-  size_t get_size() const;
-
-  template <typename T2 = T()> MyArray<T> &operator=(MyArray<T2> const &rhs);
+  void        fill(const T &object);
+  T *         begin() const;
+  T *         end() const;
+  T &         operator[](int i) const;
+  size_t      get_size() const;
+  MyArray<T> &operator=(MyArray<T> const &rhs);
 };
 
 template <typename T> class MyArray<T *>
@@ -32,13 +31,12 @@ public:
   MyArray(int size);
   MyArray(MyArray<T *> const &rhs);
   ~MyArray();
-  void   fill(T *object);
-  T **   begin() const;
-  T **   end() const;
-  T *&   operator[](int i) const;
-  size_t get_size() const;
-
-  template <typename T2> MyArray<T *> &operator=(MyArray<T2 *> const &rhs);
+  void          fill(T *object);
+  T **          begin() const;
+  T **          end() const;
+  T *&          operator[](int i) const;
+  size_t        get_size() const;
+  MyArray<T *> &operator=(MyArray<T *> const &rhs);
 };
 
 template <typename T> MyArray<T>::MyArray(int n) : size{n}
@@ -69,32 +67,33 @@ template <typename T> MyArray<T *>::MyArray(MyArray<T *> const &rhs)
 
   for (size_t i = 0; i < size; i++)
   {
-    container[i] = new T{*rhs.container[i]};
+    container[i] = new T(*rhs.container[i]);
   }
 }
 
-template <typename T>
-template <typename T2>
-MyArray<T> &MyArray<T>::operator=(MyArray<T2> const &rhs)
+template <typename T> MyArray<T> &MyArray<T>::operator=(MyArray<T> const &rhs)
 {
+  auto tmp{rhs};
+
   delete[] container;
 
-  size      = rhs.get_size();
+  size      = tmp.get_size();
   container = new T[size];
 
   for (size_t i = 0; i < size; i++)
   {
-    container[i] = T(rhs[i]);
+    container[i] = T(tmp[i]);
   }
 
   return *this;
 }
 
 template <typename T>
-template <typename T2>
-MyArray<T *> &MyArray<T *>::operator=(MyArray<T2 *> const &rhs)
+MyArray<T *> &MyArray<T *>::operator=(MyArray<T *> const &rhs)
 {
-  for (size_t i = 0; i < this.size; i++)
+  auto tmp{rhs};
+
+  for (size_t i = 0; i < this->size; i++)
   {
     delete container[i];
   }
