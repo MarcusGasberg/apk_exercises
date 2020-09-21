@@ -8,10 +8,10 @@
             "name": "g++ - Build and debug main",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/main.exe",
+            "program": "${command:extension.vscode-wsl-workspaceFolder}/bin/main.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${command:extension.vscode-wsl-workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -23,7 +23,7 @@
                 }
             ],
             "preLaunchTask": "C/C++: g++ build main",
-            "miDebuggerPath": "/usr/bin/gdb"
+            "miDebuggerPath": "/usr/bin/gdb",
         }
     ]
 }

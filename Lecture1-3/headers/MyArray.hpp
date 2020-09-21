@@ -1,208 +1,227 @@
-#ifndef __MYARRAY_H__
-#define __MYARRAY_H__
+#pragma once
 
-#include <stddef.h>
+#include <cstddef>
+#include "./MyArrayIterator.h"
 
-template <typename T> class MyArray
+template <typename T>
+class MyArray
 {
 private:
-  int size;
-  T * container;
+	int size_;
+	T *container_;
 
 public:
-  MyArray(int size);
-  MyArray(MyArray<T> const &rhs);
-  ~MyArray();
-  void        fill(const T &object);
-  T *         begin() const;
-  T *         end() const;
-  T &         operator[](int i) const;
-  size_t      get_size() const;
-  MyArray<T> &operator=(MyArray<T> const &rhs);
-  typedef T   value_type;
+	explicit MyArray(int n);
+	MyArray(MyArray<T> const &rhs);
+	~MyArray();
+	void fill(const T &object);
+	MyArrayIterator<T> begin() const;
+	MyArrayIterator<T> end() const;
+	T &operator[](int i) const;
+	size_t get_size() const;
+	MyArray<T> &operator=(MyArray<T> const &rhs);
+	typedef T value_type;
 };
 
-template <typename T> class MyArray<T *>
+template <typename T>
+class MyArray<T *>
 {
 private:
-  int size;
-  T **container;
+	int size_;
+	T **container_;
 
 public:
-  MyArray(int size);
-  MyArray(MyArray<T *> const &rhs);
-  ~MyArray();
-  void          fill(const T &object);
-  T **          begin() const;
-  T **          end() const;
-  T *&          operator[](int i) const;
-  size_t        get_size() const;
-  MyArray<T *> &operator=(MyArray<T *> const &rhs);
-  typedef T     value_type;
+	explicit MyArray(int n);
+	MyArray(MyArray<T *> const &rhs);
+	~MyArray();
+	void fill(const T &object);
+	MyArrayIterator<T *> begin() const;
+	MyArrayIterator<T *> end() const;
+	T *&operator[](int i) const;
+	size_t get_size() const;
+	MyArray<T *> &operator=(MyArray<T *> const &rhs);
+	typedef T value_type;
 };
 
-template <typename T> MyArray<T>::MyArray(int n) : size{n}
+template <typename T>
+MyArray<T>::MyArray(int n) : size_{n}
 {
-  container = new T[size];
+	container_ = new T[size_];
 }
 
-template <typename T> MyArray<T *>::MyArray(int n) : size{n}
+template <typename T>
+MyArray<T *>::MyArray(int n) : size_{n}
 {
-  container = new T *[size];
+	container_ = new T *[size_];
 }
 
-template <typename T> MyArray<T>::MyArray(MyArray<T> const &rhs)
+template <typename T>
+MyArray<T>::MyArray(MyArray<T> const &rhs)
 {
-  size      = rhs.get_size();
-  container = new T[size];
+	size_ = rhs.get_size();
+	container_ = new T[size_];
 
-  for (size_t i = 0; i < size; i++)
-  {
-    container[i] = T{rhs[i]};
-  }
+	for (size_t i = 0; i < size_; i++)
+	{
+		container_[i] = T{rhs[i]};
+	}
 }
 
-template <typename T> MyArray<T *>::MyArray(MyArray<T *> const &rhs)
+template <typename T>
+MyArray<T *>::MyArray(MyArray<T *> const &rhs)
 {
-  size      = rhs.get_size();
-  container = new T *[size];
+	size_ = rhs.get_size();
+	container_ = new T *[size_];
 
-  for (size_t i = 0; i < size; i++)
-  {
-    container[i] = new T(*rhs.container[i]);
-  }
+	for (size_t i = 0; i < size_; i++)
+	{
+		container_[i] = new T(*rhs.container_[i]);
+	}
 }
 
-template <typename T> MyArray<T> &MyArray<T>::operator=(MyArray<T> const &rhs)
+template <typename T>
+MyArray<T> &MyArray<T>::operator=(MyArray<T> const &rhs)
 {
-  auto tmp{rhs};
+	auto tmp{rhs};
 
-  delete[] container;
+	delete[] container_;
 
-  size      = tmp.get_size();
-  container = new T[size];
+	size_ = tmp.get_size();
+	container_ = new T[size_];
 
-  for (size_t i = 0; i < size; i++)
-  {
-    container[i] = T(tmp[i]);
-  }
+	for (size_t i = 0; i < size_; i++)
+	{
+		container_[i] = T(tmp[i]);
+	}
 
-  return *this;
+	return *this;
 }
 
 template <typename T>
 MyArray<T *> &MyArray<T *>::operator=(MyArray<T *> const &rhs)
 {
-  auto tmp{rhs};
+	auto tmp{rhs};
 
-  for (size_t i = 0; i < this->size; i++)
-  {
-    delete container[i];
-  }
+	for (size_t i = 0; i < this->size_; i++)
+	{
+		delete container_[i];
+	}
 
-  size      = tmp.get_size();
-  container = new T *[size];
+	size_ = tmp.get_size();
+	container_ = new T *[size_];
 
-  for (size_t i = 0; i < size; i++)
-  {
-    container[i] = new T(*tmp[i]);
-  }
+	for (size_t i = 0; i < size_; i++)
+	{
+		container_[i] = new T(*tmp[i]);
+	}
 
-  return *this;
+	return *this;
 }
 
-template <typename T> MyArray<T>::~MyArray() { delete[] container; }
+template <typename T>
+MyArray<T>::~MyArray() { delete[] container_; }
 
-template <typename T> MyArray<T *>::~MyArray()
+template <typename T>
+MyArray<T *>::~MyArray()
 {
-  for (size_t i = 0; i < this->size; i++)
-  {
-    delete container[i];
-  }
+	for (size_t i = 0; i < this->size_; i++)
+	{
+		delete container_[i];
+	}
 }
 
-template <typename T> void MyArray<T>::fill(const T &object)
+template <typename T>
+void MyArray<T>::fill(const T &object)
 {
-  for (size_t i = 0; i < size; i++)
-  {
-    container[i] = T{object};
-  }
+	for (size_t i = 0; i < size_; i++)
+	{
+		container_[i] = T{object};
+	}
 }
 
-template <typename T> void MyArray<T *>::fill(const T &object)
+template <typename T>
+void MyArray<T *>::fill(const T &object)
 {
-  for (size_t i = 0; i < size; i++)
-  {
-    container[i] = new T(object);
-  }
+	for (size_t i = 0; i < size_; i++)
+	{
+		container_[i] = new T(object);
+	}
 }
 
-template <typename T> T *MyArray<T>::begin() const { return &container[0]; }
+template <typename T>
+MyArrayIterator<T> MyArray<T>::begin() const { return MyArrayIterator<T>(&container_[0]); }
 
-template <typename T> T **MyArray<T *>::begin() const { return &container[0]; }
+template <typename T>
+MyArrayIterator<T *> MyArray<T *>::begin() const { return MyArrayIterator<T *>(&container_[0]); }
 
-template <typename T> T *MyArray<T>::end() const
+template <typename T>
+MyArrayIterator<T> MyArray<T>::end() const
 {
-  return size > 0 ? &container[size - 1] + 1 : &container[0];
+	return size_ > 0 ? MyArrayIterator<T>(&container_[size_ - 1] + 1) : MyArrayIterator<T>(&container_[0]);
 }
-template <typename T> T **MyArray<T *>::end() const
+template <typename T>
+MyArrayIterator<T *> MyArray<T *>::end() const
 {
-  return size > 0 ? &container[size - 1] + 1 : &container[0];
-}
-
-template <typename T> size_t MyArray<T>::get_size() const { return size; }
-
-template <typename T> size_t MyArray<T *>::get_size() const { return size; }
-
-template <typename T> T &MyArray<T>::operator[](int i) const
-{
-  return container[i];
+	return size_ > 0 ? MyArrayIterator<T *>(&container_[size_ - 1] + 1) : MyArrayIterator<T*>(&container_[0]);
 }
 
-template <typename T> T *&MyArray<T *>::operator[](int i) const
+template <typename T>
+size_t MyArray<T>::get_size() const { return size_; }
+
+template <typename T>
+size_t MyArray<T *>::get_size() const { return size_; }
+
+template <typename T>
+T &MyArray<T>::operator[](int i) const
 {
-  return container[i];
+	return container_[i];
 }
 
-template <typename T> T *my_find(T *first, T *last, const T &v)
+template <typename T>
+T *&MyArray<T *>::operator[](int i) const
 {
-  T *current = first;
-  while (current != last)
-  {
-    if (*current == v)
-    {
-      break;
-    }
-    current++;
-  }
-  return current;
+	return container_[i];
 }
 
-template <typename T, typename V> T **my_find(T **first, T **last, const V &v)
+template <typename T>
+MyArrayIterator<T> my_find(MyArrayIterator<T> first, MyArrayIterator<T> last, const T &v)
 {
-  T **current = first;
-  while (current != last)
-  {
-    if (**current == v)
-    {
-      break;
-    }
-    current++;
-  }
-  return current;
+	auto current = first;
+	while (current != last)
+	{
+		if (*current == v)
+		{
+			break;
+		}
+		++current;
+	}
+	return current;
+}
+
+template <typename T, typename V>
+MyArrayIterator<T *> my_find(MyArrayIterator<T *> first, MyArrayIterator<T *> last, const V &v)
+{
+	auto current = first;
+	while (current != last)
+	{
+		if (**current == v)
+		{
+			break;
+		}
+		++current;
+	}
+	return current;
 }
 
 template <typename Container>
 typename Container::value_type my_accumulate(const Container &container)
 {
-  typename Container::value_type m = typename Container::value_type();
+	typename Container::value_type m = typename Container::value_type();
 
-  for (auto val : container)
-  {
-    m += val;
-  }
+	for (auto val : container)
+	{
+		m += val;
+	}
 
-  return m;
+	return m;
 }
-
-#endif // __MYARRAY_H__
