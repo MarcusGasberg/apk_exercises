@@ -53,3 +53,16 @@ struct AtIndex<TList, N, N>
 {
     using type = decltype(TList::First());
 };
+
+
+template<typename TList>
+struct PrintIT
+{
+    PrintIT() { std::cout << typeid(TList::First).name() << std::endl; PrintIT<typename TList::Rest>(); }
+};
+
+template<>
+struct PrintIT<NullType>
+{
+    PrintIT() = default;
+};
