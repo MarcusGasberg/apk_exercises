@@ -66,3 +66,26 @@ struct PrintIT<NullType>
 {
     PrintIT() = default;
 };
+
+
+template<typename TList, typename T>
+struct Remove
+{
+    using type = TypeList<typename TList::First, typename Remove<typename TList::Rest, T>::type>;
+};
+
+
+template<typename TList, typename T>
+struct Remove<TypeList<T, TList>, T>
+{
+    using type = TList;
+};
+
+template<typename T>
+struct Remove<NullType, T>
+{
+    using type = decltype(NullType());
+};
+
+
+
